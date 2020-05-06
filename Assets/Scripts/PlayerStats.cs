@@ -29,6 +29,14 @@ public class PlayerStats : MonoBehaviour
     private bool isAlive;
     private bool isDead;
 
+    [Tooltip("How many members are in the player's party.")]
+    public int partyCount;
+
+    void Start()
+    {
+        partyCount = 3;
+    }
+
     // Update is called once per frame
     void Update()
     {

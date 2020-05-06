@@ -7,12 +7,12 @@ public class Combat : MonoBehaviour
     PlayerStats player = new PlayerStats();
     EnemyStats enemy = new EnemyStats();
 
-
+    private int turnCount;
 
     // Start is called before the first frame update
     void Start()
     {
-        
+        turnCount = player.partyCount;
     }
 
     // Update is called once per frame
@@ -24,5 +24,10 @@ public class Combat : MonoBehaviour
     public void PlayerMelee()
     {
         enemy.enemyHP -= 30;
+    }
+
+    private void runCombatSubroutine()
+    {
+
     }
 }
