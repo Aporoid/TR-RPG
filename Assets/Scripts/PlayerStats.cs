@@ -8,23 +8,23 @@ public class PlayerStats : MonoBehaviour
     [SerializeField]
     private string playerName;
 
+    //[SerializeField]
+    //public int playerHP;
+
+    //[SerializeField]
+    //public int playerTempora;
+
     [Tooltip("The amount of Health the player has.")]
-    [SerializeField]
-    public int playerHP;
+    public int currentHP;
+    public int maxHP;
 
     [Tooltip("The amount of SP the player has for abilities.")]
-    [SerializeField]
-    public int playerTempora;
+    public int currentTempora;
+    public int maxTempora;
 
     [Tooltip("The amount of ammo the player has for their guns.")]
     [SerializeField]
     public int ammoCounter;
-
-    private int minHP = 1;
-    private int maxHP = 999;
-
-    private int minTempora = 1;
-    private int maxTempora = 999;
 
     private bool isAlive;
     private bool isDead;
@@ -45,12 +45,12 @@ public class PlayerStats : MonoBehaviour
 
     void CheckMortality()
     {
-        if(playerHP > minHP)
+        if(currentHP > 0)
         {
             isAlive = true;
             isDead = false;
         }
-        else if (playerHP < minHP)
+        else if (currentHP < 0)
         {
             isAlive = false;
             isDead = true;
