@@ -14,16 +14,8 @@ public class BattleHUD : MonoBehaviour
     {
         playerHPSlider.maxValue = player.maxHP;
         playerHPSlider.value = player.currentHP;
-
-        if(tag == "Player")
-        {
-            playerSPSlider.maxValue = player.maxTempora;
-            playerSPSlider.value = player.currentTempora;
-        }
-        else
-        {
-
-        }
+        playerSPSlider.maxValue = player.maxTempora;
+        playerSPSlider.value = player.currentTempora;
     }
 
     public void SetHP(int hp)

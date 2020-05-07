@@ -9,11 +9,7 @@ public class BattleSystem : MonoBehaviour
 
     public BattleState state;
 
-    public GameObject playerPrefab;
-    public GameObject enemyPrefab;
-
     public BattleHUD playerHUD;
-    public BattleHUD enemyHUD;
 
     PlayerStats player;
     PlayerStats enemy;
@@ -26,12 +22,9 @@ public class BattleSystem : MonoBehaviour
     }
 
     void SetupBattle()
-    {
-        Instantiate(playerPrefab);
-        Instantiate(enemyPrefab);
+    { 
 
         playerHUD.SetHUD(player);
-        enemyHUD.SetHUD(enemy);
 
     }
 
