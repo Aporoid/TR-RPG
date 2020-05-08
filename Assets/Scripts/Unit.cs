@@ -5,11 +5,9 @@ using UnityEngine;
 public class Unit : MonoBehaviour
 {
     [Tooltip("The name of the character in control.")]
-    [SerializeField]
-    private string Name;
+    public string name;
 
-    [SerializeField]
-    private int level;
+    public int experienceGiven;
 
     [Tooltip("The amount of Health the player has.")]
     public int currentHP;
@@ -20,9 +18,6 @@ public class Unit : MonoBehaviour
     public int maxTempora;
 
     public int damage;
-
-    private bool isAlive;
-    private bool isDead;
 
     public bool TakeDamage(int dmg)
     {

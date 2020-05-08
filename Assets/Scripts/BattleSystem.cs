@@ -22,10 +22,16 @@ public class BattleSystem : MonoBehaviour
     public Text dialogueText;
     public Text enemyDamageText;
 
+    private AudioSource audio;
+    public AudioClip hurtSound;
+    public AudioClip killSound;
+
     Unit playerunit;
     Unit enemyUnit;
 
     public GameObject enemyPanel;
+    public Image enemyImage;
+    public GameObject playerHPGuage;
 
     //AnimationController animCon = new AnimationController();
 
@@ -33,6 +39,7 @@ public class BattleSystem : MonoBehaviour
     void Start()
     {
         state = BattleState.START;
+        audio = GetComponent<AudioSource>();
         StartCoroutine(SetupBattle());
     }
 
@@ -44,7 +51,7 @@ public class BattleSystem : MonoBehaviour
         GameObject enemyGO = Instantiate(enemyPrefab, enemyBattleStation);
         enemyUnit = enemyGO.GetComponent<Unit>();
 
-        dialogueText.text = "You were ambushed by a wild " + enemyUnit.name;
+        dialogueText.text = "Eyes up! Ambush!";
 
         playerHUD.SetHUD(playerunit);
         enemyHUD.SetHUD(enemyUnit);
@@ -67,13 +74,21 @@ public class BattleSystem : MonoBehaviour
 
         enemyHUD.SetHP(enemyUnit.currentHP);
         dialoguePopup.SetActive(true);
-        dialogueText.text = playerunit.name + " attacks!";
+        dialogueText.text = "You attack!";
+
+        audio.PlayOneShot(hurtSound, 1);
+        enemyImage.enabled = false;
+        yield return new WaitForSeconds(0.1f);
+        enemyImage.enabled = true;
+        yield return new WaitForSeconds(0.1f);
+        enemyImage.enabled = false;
+        yield return new WaitForSeconds(0.1f);
+        enemyImage.enabled = true;
+        yield return new WaitForSeconds(0.1f);
 
         yield return new WaitForSeconds(2f);
 
-        //enemyDamageText.text = playerunit.damage.ToString();
-        //animCon.PlayAnimation();
-        dialogueText.text = playerunit.name + " dealt " + playerunit.damage + " damage!";
+        dialogueText.text = "You dealt " + playerunit.damage + " damage!";
         yield return new WaitForSeconds(2f);
         dialoguePopup.SetActive(false);
 
@@ -81,6 +96,7 @@ public class BattleSystem : MonoBehaviour
         {
             state = BattleState.WON;
             enemyPanel.SetActive(false);
+            audio.PlayOneShot(killSound, 1);
             EndBattle();
         }
         else
@@ -92,20 +108,31 @@ public class BattleSystem : MonoBehaviour
 
     IEnumerator EnemyTurn()
     {
+        bool isDead = playerunit.TakeDamage(enemyUnit.damage);
+
         dialoguePopup.SetActive(true);
-        dialogueText.text = enemyUnit.name + " attacks!";
+        dialogueText.text = "The enemy attacks!";
+
+        audio.PlayOneShot(hurtSound, 1);
+        playerHUD.SetHP(playerunit.currentHP);
+
+        #region image flash enemy
+        playerHPGuage.SetActive(false);
+        yield return new WaitForSeconds(0.1f);
+        playerHPGuage.SetActive(true);
+        yield return new WaitForSeconds(0.1f);
+        playerHPGuage.SetActive(false);
+        yield return new WaitForSeconds(0.1f);
+        playerHPGuage.SetActive(true);
+        yield return new WaitForSeconds(0.1f);
+        #endregion
 
         yield return new WaitForSeconds(2f);
 
-        bool isDead = playerunit.TakeDamage(enemyUnit.damage);
-
-        playerHUD.SetHP(playerunit.currentHP);
         dialogueText.text = "You took " + enemyUnit.damage.ToString() + " damage!";
 
         yield return new WaitForSeconds(2f);
         dialoguePopup.SetActive(false);
-
-        yield return new WaitForSeconds(1f);
 
         if (isDead)
         {
@@ -125,12 +152,21 @@ public class BattleSystem : MonoBehaviour
         dialoguePopup.SetActive(true);
         if (state == BattleState.WON)
         {
-            dialogueText.text = "You won the battle!";
+            StartCoroutine(WinText());
         }
         else if (state == BattleState.LOST)
         {
             dialogueText.text = "You were defeated.";
         }
+    }
+
+    IEnumerator WinText()
+    {
+        dialogueText.text = "You won the battle!";
+        yield return new WaitForSeconds(2f);
+        dialogueText.text = "You gained " + enemyUnit.experienceGiven.ToString() + " experiece!";
+        yield return new WaitForSeconds(2f);
+        dialoguePopup.SetActive(false);
     }
 
     public void OnMeleeSelect()

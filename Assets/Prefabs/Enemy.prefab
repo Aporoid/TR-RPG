@@ -45,7 +45,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Name: Smiler
-  level: 1
+  experienceGiven: 25
   currentHP: 100
   maxHP: 100
   currentTempora: 0

@@ -125,9 +125,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Name: Daniel
-  level: 5
-  currentHP: 250
-  maxHP: 250
+  experienceGiven: 0
+  currentHP: 100
+  maxHP: 100
   currentTempora: 25
   maxTempora: 25
   damage: 25
