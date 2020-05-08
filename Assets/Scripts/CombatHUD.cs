@@ -17,6 +17,7 @@ public class CombatHUD : MonoBehaviour
     public Slider hpSlider;
     public Slider spSlider;
 
+
     public void SetHUD(Unit unit)
     {
         hpSlider.maxValue = unit.maxHP;

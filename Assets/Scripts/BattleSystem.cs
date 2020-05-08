@@ -20,11 +20,14 @@ public class BattleSystem : MonoBehaviour
 
     public GameObject dialoguePopup;
     public Text dialogueText;
+    public Text enemyDamageText;
 
     Unit playerunit;
     Unit enemyUnit;
 
     public GameObject enemyPanel;
+
+    //AnimationController animCon = new AnimationController();
 
     // Start is called before the first frame update
     void Start()
@@ -67,6 +70,11 @@ public class BattleSystem : MonoBehaviour
         dialogueText.text = playerunit.name + " attacks!";
 
         yield return new WaitForSeconds(2f);
+
+        //enemyDamageText.text = playerunit.damage.ToString();
+        //animCon.PlayAnimation();
+        dialogueText.text = playerunit.name + " dealt " + playerunit.damage + " damage!";
+        yield return new WaitForSeconds(2f);
         dialoguePopup.SetActive(false);
 
         if (isDead)
@@ -87,12 +95,15 @@ public class BattleSystem : MonoBehaviour
         dialoguePopup.SetActive(true);
         dialogueText.text = enemyUnit.name + " attacks!";
 
-        yield return new WaitForSeconds(1f);
-        dialoguePopup.SetActive(false);
+        yield return new WaitForSeconds(2f);
 
         bool isDead = playerunit.TakeDamage(enemyUnit.damage);
 
         playerHUD.SetHP(playerunit.currentHP);
+        dialogueText.text = "You took " + enemyUnit.damage.ToString() + " damage!";
+
+        yield return new WaitForSeconds(2f);
+        dialoguePopup.SetActive(false);
 
         yield return new WaitForSeconds(1f);
 
@@ -129,5 +140,4 @@ public class BattleSystem : MonoBehaviour
 
         StartCoroutine(PlayerAttack());
     }
-
 }
