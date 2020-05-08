@@ -24,6 +24,8 @@ public class BattleSystem : MonoBehaviour
     Unit playerunit;
     Unit enemyUnit;
 
+    public GameObject enemyPanel;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -55,26 +57,22 @@ public class BattleSystem : MonoBehaviour
         dialoguePopup.SetActive(false);
     }
 
-    public void OnMeleeSelect()
-    {
-        if (state != BattleState.PLAYERTURN)
-            return;
-
-        StartCoroutine(PlayerAttack());
-    }
 
     IEnumerator PlayerAttack()
     {
         bool isDead = enemyUnit.TakeDamage(playerunit.damage);
 
         enemyHUD.SetHP(enemyUnit.currentHP);
+        dialoguePopup.SetActive(true);
         dialogueText.text = "The attack is successful!";
 
         yield return new WaitForSeconds(2f);
+        dialoguePopup.SetActive(false);
 
         if (isDead)
         {
             state = BattleState.WON;
+            enemyPanel.SetActive(false);
             EndBattle();
         }
         else
@@ -86,9 +84,11 @@ public class BattleSystem : MonoBehaviour
 
     IEnumerator EnemyTurn()
     {
+        dialoguePopup.SetActive(true);
         dialogueText.text = enemyUnit.name + " attacks!";
 
         yield return new WaitForSeconds(1f);
+        dialoguePopup.SetActive(false);
 
         bool isDead = playerunit.TakeDamage(enemyUnit.damage);
 
@@ -111,6 +111,7 @@ public class BattleSystem : MonoBehaviour
 
     void EndBattle()
     {
+        dialoguePopup.SetActive(true);
         if (state == BattleState.WON)
         {
             dialogueText.text = "You won the battle!";
@@ -119,6 +120,14 @@ public class BattleSystem : MonoBehaviour
         {
             dialogueText.text = "You were defeated.";
         }
+    }
+
+    public void OnMeleeSelect()
+    {
+        if (state != BattleState.PLAYERTURN)
+            return;
+
+        StartCoroutine(PlayerAttack());
     }
 
 }
