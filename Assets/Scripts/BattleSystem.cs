@@ -41,7 +41,7 @@ public class BattleSystem : MonoBehaviour
         GameObject enemyGO = Instantiate(enemyPrefab, enemyBattleStation);
         enemyUnit = enemyGO.GetComponent<Unit>();
 
-        dialogueText.text = "You were ambushed by a wild " + enemyUnit.name + "! Eyes up!";
+        dialogueText.text = "You were ambushed by a wild " + enemyUnit.name;
 
         playerHUD.SetHUD(playerunit);
         enemyHUD.SetHUD(enemyUnit);
@@ -64,7 +64,7 @@ public class BattleSystem : MonoBehaviour
 
         enemyHUD.SetHP(enemyUnit.currentHP);
         dialoguePopup.SetActive(true);
-        dialogueText.text = "The attack is successful!";
+        dialogueText.text = playerunit.name + " attacks!";
 
         yield return new WaitForSeconds(2f);
         dialoguePopup.SetActive(false);
