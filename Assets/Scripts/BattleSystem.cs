@@ -58,10 +58,12 @@ public class BattleSystem : MonoBehaviour
         state = BattleState.START;
         audio = GetComponent<AudioSource>();
         StartCoroutine(SetupBattle());
+
 		playerHealthBG.color = Color.grey;
 		allyHealthBG.color = Color.grey;
 		isEnemyDead = enemyUnit.currentHP == 0;
 		isPlayerDead = playerunit.currentHP == 0;
+		tripletapGuarantee = 0;
     }
 
     IEnumerator SetupBattle()

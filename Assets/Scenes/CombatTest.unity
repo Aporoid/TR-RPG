@@ -1100,8 +1100,9 @@ GameObject:
   - component: {fileID: 242496482}
   - component: {fileID: 242496481}
   - component: {fileID: 242496480}
+  - component: {fileID: 242496485}
   m_Layer: 5
-  m_Name: Button
+  m_Name: TemporaChoiceButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1287,6 +1288,24 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 242496478}
   m_CullTransparentMesh: 0
+--- !u!114 &242496485
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 242496478}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d5be6b9bbf438274ead1d05148e7dc4c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  temporaIcon: {fileID: 21300000, guid: 2b7b33e337a06e74b8eff4a0be38074e, type: 3}
+  temporaName: Time Manipulation
+  temporaDescription: 
+  spCost: 10
+  temporaDamage: 0
+  temporaChoices: 3
 --- !u!1 &268202871
 GameObject:
   m_ObjectHideFlags: 0
