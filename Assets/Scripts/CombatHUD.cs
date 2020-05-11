@@ -8,11 +8,7 @@ public class CombatHUD : MonoBehaviour
     [SerializeField]
     private Text unitHPCurrent;
     [SerializeField]
-    private Text unitHPMax;
-    [SerializeField]
     private Text unitSPCurrent;
-    [SerializeField]
-    private Text unitSPMax;
 
     public Slider hpSlider;
     public Slider spSlider;
@@ -26,18 +22,18 @@ public class CombatHUD : MonoBehaviour
         spSlider.value = unit.currentTempora;
 
         unitHPCurrent.text = unit.currentHP.ToString();
-        unitHPMax.text = unit.maxHP.ToString();
         unitSPCurrent.text = unit.currentTempora.ToString();
-        unitSPMax.text = unit.maxTempora.ToString();
     }
 
     public void SetHP(int hp)
     {
         hpSlider.value = hp;
-    }
+		unitHPCurrent.text = hp.ToString();
+	}
 
     public void SetSP(int sp)
     {
         spSlider.value = sp;
+		unitSPCurrent.text = sp.ToString();
     }
 }

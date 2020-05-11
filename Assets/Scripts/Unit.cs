@@ -19,6 +19,10 @@ public class Unit : MonoBehaviour
 
     public int damage;
 
+	[Tooltip("How to keep track of the number of party members")]
+	public bool isAnAlly1;
+	public bool isAnAlly2;
+
     public bool TakeDamage(int dmg)
     {
         currentHP -= dmg;

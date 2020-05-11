@@ -44,13 +44,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4cd229ef444f98e40a66d978733f79dd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Name: Smiler
+  name: Smiler
   experienceGiven: 25
-  currentHP: 100
+  currentHP: 500
   maxHP: 100
   currentTempora: 0
   maxTempora: 0
   damage: 15
+  isAnAlly1: 0
+  isAnAlly2: 0
 --- !u!1 &6976149351991349726
 GameObject:
   m_ObjectHideFlags: 0
