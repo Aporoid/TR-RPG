@@ -36,6 +36,7 @@ public class BattleSystem : MonoBehaviour
 	private AudioSource audio;
     public AudioClip hurtSound;
     public AudioClip killSound;
+	public AudioClip gunshot;
 	#endregion
 
 	Unit playerunit;
@@ -43,6 +44,11 @@ public class BattleSystem : MonoBehaviour
 	Unit allyUnit;
 
 	private int rng;
+	private bool isPlayerDead;
+	private bool isAllyDead;
+	private bool isEnemyDead;
+
+	private int tripletapGuarantee;
 
     //AnimationController animCon = new AnimationController();
 
@@ -54,6 +60,8 @@ public class BattleSystem : MonoBehaviour
         StartCoroutine(SetupBattle());
 		playerHealthBG.color = Color.grey;
 		allyHealthBG.color = Color.grey;
+		isEnemyDead = enemyUnit.currentHP == 0;
+		isPlayerDead = playerunit.currentHP == 0;
     }
 
     IEnumerator SetupBattle()
@@ -104,7 +112,9 @@ public class BattleSystem : MonoBehaviour
 
     IEnumerator PlayerAttack()
     {
-        bool isDead = enemyUnit.TakeDamage(playerunit.damage);
+		//bool isDead = enemyUnit.TakeDamage(playerunit.damage);
+
+		enemyUnit.TakeDamage(playerunit.damage);
 
         enemyHUD.SetHP(enemyUnit.currentHP);
         dialoguePopup.SetActive(true);
@@ -128,7 +138,7 @@ public class BattleSystem : MonoBehaviour
         yield return new WaitForSeconds(2f);
         dialoguePopup.SetActive(false);
 
-        if (isDead)
+        if (isEnemyDead)
         {
             state = BattleState.WON;
             enemyPanel.SetActive(false);
@@ -152,8 +162,9 @@ public class BattleSystem : MonoBehaviour
 
 	IEnumerator AllyAttack()
 	{
-		bool isDead = enemyUnit.TakeDamage(allyUnit.damage);
+		//bool isDead = enemyUnit.TakeDamage(allyUnit.damage);
 
+		enemyUnit.TakeDamage(allyUnit.damage);
 		enemyHUD.SetHP(enemyUnit.currentHP);
 		dialoguePopup.SetActive(true);
 		dialogueText.text = allyUnit.name + " attack!";
@@ -176,7 +187,7 @@ public class BattleSystem : MonoBehaviour
 		yield return new WaitForSeconds(2f);
 		dialoguePopup.SetActive(false);
 
-		if (isDead)
+		if (isEnemyDead)
 		{
 			state = BattleState.WON;
 			enemyPanel.SetActive(false);
@@ -207,7 +218,7 @@ public class BattleSystem : MonoBehaviour
 
 	IEnumerator EnemyTurn()
     {
-		bool isDead = playerunit.currentHP == 0;
+		//bool isDead = playerunit.currentHP == 0;
 		playerHealthBG.color = Color.gray;
 		allyHealthBG.color = Color.gray;
 
@@ -216,8 +227,13 @@ public class BattleSystem : MonoBehaviour
 
         audio.PlayOneShot(hurtSound, 1);
 
-		rng = Random.Range(1, 6);
+		rng = Random.Range(1, 12);
+
 		if(rng < 2)
+		{
+			dialogueText.text = "The attack missed!";
+		}
+		else if (rng < 6 && rng > 2)
 		{
 			playerunit.TakeDamage(enemyUnit.damage);
 			playerHUD.SetHP(playerunit.currentHP);
@@ -225,7 +241,7 @@ public class BattleSystem : MonoBehaviour
 
 			dialogueText.text = playerunit.name + " took " + enemyUnit.damage.ToString() + " damage!";
 		}
-		else if(rng > 2)
+		else if(rng > 6)
 		{
 			allyUnit.TakeDamage(enemyUnit.damage);
 			allyHUD.SetHP(allyUnit.currentHP);
@@ -239,7 +255,7 @@ public class BattleSystem : MonoBehaviour
         yield return new WaitForSeconds(2f);
         dialoguePopup.SetActive(false);
 
-        if (isDead)
+        if (isPlayerDead)
         {
             state = BattleState.LOST;
             EndBattle();
@@ -276,10 +292,6 @@ public class BattleSystem : MonoBehaviour
 
     public void OnMeleeSelect()
     {
-        //if (state != BattleState.PLAYERTURN || state != BattleState.ALLYTURN)
-        //    return;
-
-        //StartCoroutine(PlayerAttack());
 		if(state == BattleState.PLAYERTURN)
 		{
 			StartCoroutine(PlayerAttack());
@@ -293,4 +305,195 @@ public class BattleSystem : MonoBehaviour
 			// do nothing
 		}
     }
+
+	public void OnGunSelect()
+	{
+		if (state == BattleState.PLAYERTURN)
+		{
+			StartCoroutine(PlayerGunfire());
+		}
+		else if (state == BattleState.ALLYTURN)
+		{
+			StartCoroutine(AllyGunfire());
+		}
+		else
+		{
+			// do nothing
+		}
+	}
+
+	IEnumerator PlayerGunfire()
+	{
+		if (playerunit.ammo > 1)
+		{
+			rng = Random.Range(0, 12);
+			if (rng >= 2 && rng <= 9) // the gunshot hits
+			{
+				audio.PlayOneShot(gunshot, 1);
+				enemyUnit.TakeDamage(playerunit.gunDamage);
+				enemyImage.enabled = false;
+				yield return new WaitForSeconds(0.1f);
+				enemyImage.enabled = true;
+				yield return new WaitForSeconds(0.1f);
+				enemyImage.enabled = false;
+				yield return new WaitForSeconds(0.1f);
+				enemyImage.enabled = true;
+				yield return new WaitForSeconds(0.1f);
+
+				dialoguePopup.SetActive(true);
+				dialogueText.text = "1 shot hit for " + playerunit.gunDamage + " damage!";
+				yield return new WaitForSeconds(2f);
+				dialoguePopup.SetActive(false);
+
+				playerunit.ammo--;
+				tripletapGuarantee++;
+			}
+			else if (rng < 2) // the gunshot misses
+			{
+				audio.PlayOneShot(gunshot, 1);
+				dialoguePopup.SetActive(true);
+				dialogueText.text = "Attack missed!";
+				yield return new WaitForSeconds(2f);
+				dialoguePopup.SetActive(false);
+				playerunit.ammo--;
+			}
+			else if (rng > 9 || tripletapGuarantee == 5) // fire 3 shots
+			{
+				Debug.Log("Triple tap ready to fire");
+
+				audio.PlayOneShot(gunshot, 1);
+				yield return new WaitForSeconds(0.2f);
+				audio.PlayOneShot(gunshot, 1);
+				yield return new WaitForSeconds(0.2f);
+				audio.PlayOneShot(gunshot, 1);
+				yield return new WaitForSeconds(0.2f);
+				enemyUnit.TakeDamage(playerunit.gunDamage * 3);
+
+				enemyImage.enabled = false;
+				yield return new WaitForSeconds(0.1f);
+				enemyImage.enabled = true;
+				yield return new WaitForSeconds(0.1f);
+				enemyImage.enabled = false;
+				yield return new WaitForSeconds(0.1f);
+				enemyImage.enabled = true;
+				yield return new WaitForSeconds(0.1f);
+
+				dialoguePopup.SetActive(true);
+				dialogueText.text = "3 shots hit for " + playerunit.gunDamage*3 + " damage!";
+				yield return new WaitForSeconds(2f);
+				dialoguePopup.SetActive(false);
+
+				playerunit.ammo-= 3;
+				tripletapGuarantee = 0;
+			}
+		}
+		else
+		{
+			dialoguePopup.SetActive(true);
+			dialogueText.text = "No ammo available!";
+			yield return new WaitForSeconds(2f);
+			dialoguePopup.SetActive(false);
+		}
+
+
+		if (isEnemyDead)
+		{
+			state = BattleState.WON;
+			enemyPanel.SetActive(false);
+			audio.PlayOneShot(killSound, 1);
+			EndBattle();
+		}
+		else
+		{
+			if (allyUnit.isAnAlly1 == true)
+			{
+				state = BattleState.ALLYTURN;
+				AllyTurn1();
+			}
+			else
+			{
+				state = BattleState.ENEMYTURN;
+				StartCoroutine(EnemyTurn());
+			}
+		}
+	}
+
+	IEnumerator AllyGunfire()
+	{
+		if (allyUnit.ammo > 1)
+		{
+			rng = Random.Range(0, 12);
+			if (rng >= 2 && rng <= 9) // the gunshot hits
+			{
+				audio.PlayOneShot(gunshot, 1);
+				enemyUnit.TakeDamage(playerunit.gunDamage);
+				enemyImage.enabled = false;
+				yield return new WaitForSeconds(0.1f);
+				enemyImage.enabled = true;
+				yield return new WaitForSeconds(0.1f);
+				enemyImage.enabled = false;
+				yield return new WaitForSeconds(0.1f);
+				enemyImage.enabled = true;
+				yield return new WaitForSeconds(0.1f);
+
+				dialoguePopup.SetActive(true);
+				dialogueText.text = "1 shot hit for " + playerunit.gunDamage + " damage!";
+				yield return new WaitForSeconds(2f);
+				dialoguePopup.SetActive(false);
+			}
+			else if (rng < 2) // the gunshot misses
+			{
+				audio.PlayOneShot(gunshot, 1);
+				dialoguePopup.SetActive(true);
+				dialogueText.text = "Attack missed!";
+				yield return new WaitForSeconds(2f);
+				dialoguePopup.SetActive(false);
+			}
+			else if (rng > 9 && playerunit.ammo == 3) // fire 3 shots
+			{
+				audio.PlayOneShot(gunshot, 1);
+				yield return new WaitForSeconds(0.2f);
+				audio.PlayOneShot(gunshot, 1);
+				yield return new WaitForSeconds(0.2f);
+				audio.PlayOneShot(gunshot, 1);
+				yield return new WaitForSeconds(0.2f);
+				enemyUnit.TakeDamage(playerunit.gunDamage * 3);
+
+				enemyImage.enabled = false;
+				yield return new WaitForSeconds(0.1f);
+				enemyImage.enabled = true;
+				yield return new WaitForSeconds(0.1f);
+				enemyImage.enabled = false;
+				yield return new WaitForSeconds(0.1f);
+				enemyImage.enabled = true;
+				yield return new WaitForSeconds(0.1f);
+
+				dialoguePopup.SetActive(true);
+				dialogueText.text = "3 shots hit for " + playerunit.gunDamage * 3 + " damage!";
+				yield return new WaitForSeconds(2f);
+				dialoguePopup.SetActive(false);
+			}
+		}
+		else
+		{
+			dialoguePopup.SetActive(true);
+			dialogueText.text = "No ammo available!";
+			yield return new WaitForSeconds(2f);
+			dialoguePopup.SetActive(false);
+		}
+
+
+		if (isEnemyDead)
+		{
+			state = BattleState.WON;
+			enemyPanel.SetActive(false);
+			audio.PlayOneShot(killSound, 1);
+			EndBattle();
+		}
+		else
+		{
+			state = BattleState.ENEMYTURN;
+			StartCoroutine(EnemyTurn());
+		}
+	}
 }

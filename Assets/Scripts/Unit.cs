@@ -17,7 +17,10 @@ public class Unit : MonoBehaviour
     public int currentTempora;
     public int maxTempora;
 
+	public int ammo;
+
     public int damage;
+	public int gunDamage;
 
 	[Tooltip("How to keep track of the number of party members")]
 	public bool isAnAlly1;

@@ -124,12 +124,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4cd229ef444f98e40a66d978733f79dd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  name: Ally
+  name: Athena
   experienceGiven: 0
   currentHP: 250
   maxHP: 250
   currentTempora: 200
   maxTempora: 200
+  ammo: 30
   damage: 35
+  gunDamage: 20
   isAnAlly1: 1
   isAnAlly2: 0
