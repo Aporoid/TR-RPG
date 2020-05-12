@@ -18,10 +18,13 @@ public class Unit : MonoBehaviour
     public int maxTempora;
 
 	public int damage;
+	public int defense;
+	public int concentration;
+	public int resistance;
 	public int gunDamage;
 	public int ammo;
 
-	public GameObject[] TemporaChoices = new GameObject[6];
+	//public GameObject[] TemporaChoices = new GameObject[6];
 
 	[Tooltip("How to keep track of the number of party members")]
 	public bool isAnAlly1;

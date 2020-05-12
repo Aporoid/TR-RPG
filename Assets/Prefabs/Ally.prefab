@@ -130,8 +130,11 @@ MonoBehaviour:
   maxHP: 250
   currentTempora: 200
   maxTempora: 200
-  ammo: 30
   damage: 35
+  defense: 5
+  concentration: 1
+  resistance: 3
   gunDamage: 20
+  ammo: 30
   isAnAlly1: 1
   isAnAlly2: 0

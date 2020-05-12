@@ -30,6 +30,10 @@ public class BattleSystem : MonoBehaviour
 	public GameObject allyHPGuage;
 	public Image playerHealthBG;
 	public Image allyHealthBG;
+	public Button meleeButton;
+	public Button gunButton;
+	public Button temporaButton;
+
 	#endregion
 
 	#region audio
@@ -103,20 +107,28 @@ public class BattleSystem : MonoBehaviour
         dialoguePopup.SetActive(false);
 		playerHealthBG.color = Color.white;
 		allyHealthBG.color = Color.gray;
+		meleeButton.interactable = true;
+		gunButton.interactable = true;
+		temporaButton.interactable = true;
 	}
 
 	void AllyTurn1()
 	{
 		playerHealthBG.color = Color.gray;
 		allyHealthBG.color = Color.white;
+		meleeButton.interactable = true;
+		gunButton.interactable = true;
+		temporaButton.interactable = true;
+
 		Debug.Log("Ally is in control");
 	}
 
     IEnumerator PlayerAttack()
     {
 		//bool isDead = enemyUnit.TakeDamage(playerunit.damage);
+		meleeButton.interactable = false;
 
-		enemyUnit.TakeDamage(playerunit.damage);
+		enemyUnit.TakeDamage(playerunit.damage / enemyUnit.defense);
 
         enemyHUD.SetHP(enemyUnit.currentHP);
         dialoguePopup.SetActive(true);
@@ -139,6 +151,9 @@ public class BattleSystem : MonoBehaviour
 		dialogueText.text = playerunit.name + " dealt " + playerunit.damage + " damage!";
         yield return new WaitForSeconds(2f);
         dialoguePopup.SetActive(false);
+
+		meleeButton.interactable = true;
+		meleeButton.Select();
 
         if (isEnemyDead)
         {
@@ -165,6 +180,7 @@ public class BattleSystem : MonoBehaviour
 	IEnumerator AllyAttack()
 	{
 		//bool isDead = enemyUnit.TakeDamage(allyUnit.damage);
+		meleeButton.interactable = false;
 
 		enemyUnit.TakeDamage(allyUnit.damage);
 		enemyHUD.SetHP(enemyUnit.currentHP);
@@ -188,6 +204,9 @@ public class BattleSystem : MonoBehaviour
 		dialogueText.text = allyUnit.name + " dealt " + allyUnit.damage + " damage!";
 		yield return new WaitForSeconds(2f);
 		dialoguePopup.SetActive(false);
+
+		meleeButton.interactable = true;
+		meleeButton.Select();
 
 		if (isEnemyDead)
 		{
@@ -220,12 +239,28 @@ public class BattleSystem : MonoBehaviour
 
 	IEnumerator EnemyTurn()
     {
+
 		//bool isDead = playerunit.currentHP == 0;
 		playerHealthBG.color = Color.gray;
 		allyHealthBG.color = Color.gray;
 
+		enemyImage.color = Color.gray;
+		yield return new WaitForSeconds(0.1f);
+		enemyImage.color = Color.white;
+		yield return new WaitForSeconds(0.1f);
+		enemyImage.color = Color.gray;
+		yield return new WaitForSeconds(0.1f);
+		enemyImage.color = Color.white;
+		yield return new WaitForSeconds(0.2f);
+
 		dialoguePopup.SetActive(true);
         dialogueText.text = "The " + enemyUnit.name + " attacks!";
+
+		meleeButton.interactable = false;
+		gunButton.interactable = false;
+		temporaButton.interactable = false;
+
+		yield return new WaitForSeconds(2f);
 
         audio.PlayOneShot(hurtSound, 1);
 
@@ -237,7 +272,7 @@ public class BattleSystem : MonoBehaviour
 		}
 		else if (rng < 6 && rng > 2)
 		{
-			playerunit.TakeDamage(enemyUnit.damage);
+			playerunit.TakeDamage(enemyUnit.damage / playerunit.defense);
 			playerHUD.SetHP(playerunit.currentHP);
 			Debug.Log("The enemy attacked the player");
 
@@ -245,7 +280,7 @@ public class BattleSystem : MonoBehaviour
 		}
 		else if(rng > 6)
 		{
-			allyUnit.TakeDamage(enemyUnit.damage);
+			allyUnit.TakeDamage(enemyUnit.damage / allyUnit.defense);
 			allyHUD.SetHP(allyUnit.currentHP);
 			Debug.Log("The enemy attacked the ally");
 
@@ -257,7 +292,12 @@ public class BattleSystem : MonoBehaviour
         yield return new WaitForSeconds(2f);
         dialoguePopup.SetActive(false);
 
-        if (isPlayerDead)
+		meleeButton.interactable = true;
+		gunButton.interactable = true;
+		temporaButton.interactable = true;
+		meleeButton.Select();
+
+		if (isPlayerDead)
         {
             state = BattleState.LOST;
             EndBattle();
@@ -326,6 +366,7 @@ public class BattleSystem : MonoBehaviour
 
 	IEnumerator PlayerGunfire()
 	{
+		gunButton.interactable = false;
 		if (playerunit.ammo > 1)
 		{
 			rng = Random.Range(0, 12);
@@ -397,6 +438,8 @@ public class BattleSystem : MonoBehaviour
 			dialoguePopup.SetActive(false);
 		}
 
+		gunButton.interactable = true;
+		gunButton.Select();
 
 		if (isEnemyDead)
 		{
@@ -422,6 +465,7 @@ public class BattleSystem : MonoBehaviour
 
 	IEnumerator AllyGunfire()
 	{
+		gunButton.interactable = false;
 		if (allyUnit.ammo > 1)
 		{
 			rng = Random.Range(0, 12);
@@ -484,6 +528,8 @@ public class BattleSystem : MonoBehaviour
 			dialoguePopup.SetActive(false);
 		}
 
+		gunButton.interactable = true;
+		gunButton.Select();
 
 		if (isEnemyDead)
 		{

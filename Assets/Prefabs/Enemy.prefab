@@ -51,6 +51,11 @@ MonoBehaviour:
   currentTempora: 0
   maxTempora: 0
   damage: 15
+  defense: 1
+  concentration: 1
+  resistance: 1
+  gunDamage: 0
+  ammo: 0
   isAnAlly1: 0
   isAnAlly2: 0
 --- !u!1 &6976149351991349726
