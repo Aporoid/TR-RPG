@@ -11041,7 +11041,7 @@ MonoBehaviour:
   m_ChildAlignment: 0
   m_StartCorner: 0
   m_StartAxis: 0
-  m_CellSize: {x: 650, y: 80}
+  m_CellSize: {x: 650, y: 100}
   m_Spacing: {x: 0, y: 0}
   m_Constraint: 0
   m_ConstraintCount: 2
@@ -11058,7 +11058,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   temporaList:
-  - temporaIcon: {fileID: 21300000, guid: 2b7b33e337a06e74b8eff4a0be38074e, type: 3}
+  - temporaIcon: {fileID: 21300000, guid: 68933eeeb2247084d8ca7b8d9389704c, type: 3}
     temporaName: Time manipulation
     temporaDescription: Manipulate time to lower the enemy's DEF.
     spCost: 10
