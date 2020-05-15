@@ -21,8 +21,6 @@ public class TemporaScrollList : MonoBehaviour
 	public TemporaScrollList secondaryTemporaScrollList;
 	public TemporaObjectPool buttonObjectPool;
 
-	public Text temporaDescriptionText;
-
     // Start is called before the first frame update
     void Start()
     {
